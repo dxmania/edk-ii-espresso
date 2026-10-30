@@ -1,0 +1,27 @@
+[FD.Espresso_EFI]
+BaseAddress   = 0x80000000|gArmTokenSpaceGuid.PcdFdBaseAddress
+Size          = 0x00100000|gArmTokenSpaceGuid.PcdFdSize
+ErasePolarity = 1
+BlockSize     = 0x00001000
+NumBlocks     = 0x100
+
+0x00000000|0x00100000
+FV = FVMAIN
+
+[FV.FVMAIN]
+FvAlignment        = 8
+ERASE_POLARITY     = 1
+MEMORY_MAPPED      = TRUE
+STICKY_WRITE       = TRUE
+LOCK_CAP           = FALSE
+LOCK_STATUS        = FALSE
+WRITE_DISABLED_CAP = FALSE
+WRITE_ENABLED_CAP  = TRUE
+SET_LOCK_CAP       = FALSE
+SET_LOCK_STATUS    = FALSE
+READ_DISABLED_CAP  = FALSE
+READ_ENABLED_CAP   = TRUE
+READ_STATUS        = FALSE
+WRITE_STATUS       = FALSE
+
+INF ArmPkg/Drivers/CpuPei/CpuPei.inf

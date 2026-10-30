@@ -1,0 +1,17 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = Omap4SerialPortLib
+  FILE_GUID                      = 8c13f649-6232-4752-9b27-440263f6a2b8
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = SerialPortLib
+
+[Sources]
+  Omap4SerialPortLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  Omap4Pkg/Omap4Pkg.dec
+
+[FixedPcd]
+  gOmap4PkgTokenSpaceGuid.PcdOmap4UartBase

@@ -1,0 +1,20 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = EspressoBoardLib
+  FILE_GUID                      = 4a82b311-6b28-433c-9a25-e51c89f518e1
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = ArmPlatformLib
+
+[Sources]
+  EspressoBoardLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  ArmPlatformPkg/ArmPlatformPkg.dec
+  Omap4Pkg/Omap4Pkg.dec
+
+[LibraryClasses]
+  IoLib
+  ArmLib
