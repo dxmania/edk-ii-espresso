@@ -1,8 +1,7 @@
 # Samsung Galaxy® Tab 2 EDK-II
 
 > [!CAUTION]
->
-> > This is nonfunctional in its current state. Compiling and flashing is not supported as of yet.
+> This is nonfunctional in its current state. Compiling and flashing is not supported as of yet.
 
 This project attempts to port EDK-II as a module chainloadable by SBoot for the Tab 2. Considering how the PandaPkg reference platform is entirely dead within the context of EDK-II, a port will have to be redone for the OMAP 4 4430/4460. The initial target, being the Tab 2, is 4430 based, so this port is focused SPECIFICALLY on that.
 
