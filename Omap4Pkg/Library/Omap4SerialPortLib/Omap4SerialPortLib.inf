@@ -13,5 +13,9 @@
   MdePkg/MdePkg.dec
   Omap4Pkg/Omap4Pkg.dec
 
+[LibraryClasses]
+  IoLib
+  PcdLib
+
 [FixedPcd]
   gOmap4PkgTokenSpaceGuid.PcdOmap4UartBase

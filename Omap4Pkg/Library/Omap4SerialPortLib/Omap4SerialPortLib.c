@@ -112,7 +112,7 @@ SerialPortInitialize (
     return RETURN_SUCCESS;
   }
 
-  UartBase      = (UINTN)PcdGet32 (PcdOmap4UartBase);
+  UartBase      = (UINTN)FixedPcdGet32 (PcdOmap4UartBase);
   ClockControl  = MmioRead32 (OMAP4_CM_L4PER_UART3_CLKCTRL);
   ClockControl &= ~OMAP4_CM_CLKCTRL_MODULEMODE;
   ClockControl |= OMAP4_CM_CLKCTRL_ENABLE;
@@ -166,7 +166,7 @@ SerialPortWrite (
     return 0;
   }
 
-  UartBase = (UINTN)PcdGet32 (PcdOmap4UartBase);
+  UartBase = (UINTN)FixedPcdGet32 (PcdOmap4UartBase);
   for (Count = 0; Count < NumberOfBytes; Count++) {
     if (!WaitForUartStatus (UartBase, OMAP4_LSR_THRE)) {
       break;
@@ -194,7 +194,7 @@ SerialPortRead (
     return 0;
   }
 
-  UartBase = (UINTN)PcdGet32 (PcdOmap4UartBase);
+  UartBase = (UINTN)FixedPcdGet32 (PcdOmap4UartBase);
   for (Count = 0; Count < NumberOfBytes; Count++) {
     if ((MmioRead32 (UartBase + OMAP4_UART_LSR) & OMAP4_LSR_DR) == 0) {
       break;
@@ -218,7 +218,7 @@ SerialPortPoll (
     return FALSE;
   }
 
-  UartBase = (UINTN)PcdGet32 (PcdOmap4UartBase);
+  UartBase = (UINTN)FixedPcdGet32 (PcdOmap4UartBase);
   return (MmioRead32 (UartBase + OMAP4_UART_LSR) & OMAP4_LSR_DR) != 0;
 }
 
@@ -281,7 +281,7 @@ SerialPortSetAttributes (
     return Status;
   }
 
-  UartBase = (UINTN)PcdGet32 (PcdOmap4UartBase);
+  UartBase = (UINTN)FixedPcdGet32 (PcdOmap4UartBase);
   Status   = ConfigureUart (
                UartBase,
                RequestedBaudRate,
