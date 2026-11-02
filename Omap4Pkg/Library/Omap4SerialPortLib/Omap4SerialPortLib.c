@@ -24,15 +24,89 @@ WaitForUartStatus (
   return FALSE;
 }
 
+STATIC
+RETURN_STATUS
+ConfigureUart (
+  IN UINTN              UartBase,
+  IN UINT64             BaudRate,
+  IN UINT8              DataBits,
+  IN EFI_PARITY_TYPE    Parity,
+  IN EFI_STOP_BITS_TYPE StopBits
+  )
+{
+  UINT64  Divisor;
+  UINT8   LineControl;
+
+  if ((BaudRate == 0) || (BaudRate > (OMAP4_UART3_CLOCK_HZ / 16)) ||
+      (DataBits < 5) || (DataBits > 8))
+  {
+    return RETURN_INVALID_PARAMETER;
+  }
+
+  LineControl = (UINT8)(DataBits - 5);
+  switch (Parity) {
+    case DefaultParity:
+    case NoParity:
+      break;
+    case EvenParity:
+      LineControl |= OMAP4_UART_LCR_PARITY | OMAP4_UART_LCR_EVEN;
+      break;
+    case OddParity:
+      LineControl |= OMAP4_UART_LCR_PARITY;
+      break;
+    case MarkParity:
+      LineControl |= OMAP4_UART_LCR_PARITY | OMAP4_UART_LCR_STICK;
+      break;
+    case SpaceParity:
+      LineControl |= OMAP4_UART_LCR_PARITY | OMAP4_UART_LCR_EVEN | OMAP4_UART_LCR_STICK;
+      break;
+    default:
+      return RETURN_INVALID_PARAMETER;
+  }
+
+  switch (StopBits) {
+    case DefaultStopBits:
+    case OneStopBit:
+      break;
+    case OneFiveStopBits:
+      if (DataBits != 5) {
+        return RETURN_INVALID_PARAMETER;
+      }
+
+      LineControl |= OMAP4_UART_LCR_STOP;
+      break;
+    case TwoStopBits:
+      LineControl |= OMAP4_UART_LCR_STOP;
+      break;
+    default:
+      return RETURN_INVALID_PARAMETER;
+  }
+
+  Divisor = (OMAP4_UART3_CLOCK_HZ + (8 * BaudRate)) / (16 * BaudRate);
+  if ((Divisor == 0) || (Divisor > 0xFFFF)) {
+    return RETURN_INVALID_PARAMETER;
+  }
+
+  MmioWrite32 (UartBase + OMAP4_UART_MDR1, OMAP4_UART_MDR1_DISABLE);
+  MmioWrite32 (UartBase + OMAP4_UART_LCR, OMAP4_UART_LCR_DLAB);
+  MmioWrite32 (UartBase + OMAP4_UART_DLL, (UINT32)Divisor & 0xFF);
+  MmioWrite32 (UartBase + OMAP4_UART_DLH, ((UINT32)Divisor >> 8) & 0xFF);
+  MmioWrite32 (UartBase + OMAP4_UART_LCR, LineControl);
+  MmioWrite32 (UartBase + OMAP4_UART_MDR1, 0);
+
+  return RETURN_SUCCESS;
+}
+
 RETURN_STATUS
 EFIAPI
 SerialPortInitialize (
   VOID
   )
 {
-  UINTN   UartBase;
-  UINT32  ClockControl;
-  UINTN   Count;
+  UINTN          UartBase;
+  UINT32         ClockControl;
+  UINTN          Count;
+  RETURN_STATUS  Status;
 
   if (mSerialPortInitialized) {
     return RETURN_SUCCESS;
@@ -59,11 +133,16 @@ SerialPortInitialize (
   MmioWrite32 (UartBase + OMAP4_UART_IER, 0);
   MmioWrite32 (UartBase + OMAP4_UART_MCR, 0);
   MmioWrite32 (UartBase + OMAP4_UART_FCR, OMAP4_UART_FCR_CLEAR);
-  MmioWrite32 (UartBase + OMAP4_UART_LCR, OMAP4_UART_LCR_DLAB);
-  MmioWrite32 (UartBase + OMAP4_UART_DLL, OMAP4_UART_DIVISOR & 0xFF);
-  MmioWrite32 (UartBase + OMAP4_UART_DLH, (OMAP4_UART_DIVISOR >> 8) & 0xFF);
-  MmioWrite32 (UartBase + OMAP4_UART_LCR, OMAP4_UART_LCR_8N1);
-  MmioWrite32 (UartBase + OMAP4_UART_MDR1, 0);
+  Status = ConfigureUart (
+             UartBase,
+             OMAP4_UART_BAUD_RATE,
+             OMAP4_UART_DATA_BITS,
+             NoParity,
+             OneStopBit
+             );
+  if (RETURN_ERROR (Status)) {
+    return Status;
+  }
 
   mSerialPortInitialized = TRUE;
   return RETURN_SUCCESS;
@@ -106,7 +185,25 @@ SerialPortRead (
   IN  UINTN  NumberOfBytes
   )
 {
-  return 0;
+  UINTN  UartBase;
+  UINTN  Count;
+
+  if ((Buffer == NULL) || (NumberOfBytes == 0) ||
+      RETURN_ERROR (SerialPortInitialize ()))
+  {
+    return 0;
+  }
+
+  UartBase = (UINTN)PcdGet32 (PcdOmap4UartBase);
+  for (Count = 0; Count < NumberOfBytes; Count++) {
+    if ((MmioRead32 (UartBase + OMAP4_UART_LSR) & OMAP4_LSR_DR) == 0) {
+      break;
+    }
+
+    Buffer[Count] = (UINT8)MmioRead32 (UartBase + OMAP4_UART_THR);
+  }
+
+  return Count;
 }
 
 BOOLEAN
@@ -115,7 +212,14 @@ SerialPortPoll (
   VOID
   )
 {
-  return FALSE;
+  UINTN  UartBase;
+
+  if (RETURN_ERROR (SerialPortInitialize ())) {
+    return FALSE;
+  }
+
+  UartBase = (UINTN)PcdGet32 (PcdOmap4UartBase);
+  return (MmioRead32 (UartBase + OMAP4_UART_LSR) & OMAP4_LSR_DR) != 0;
 }
 
 RETURN_STATUS
@@ -147,5 +251,55 @@ SerialPortSetAttributes (
   IN OUT EFI_STOP_BITS_TYPE  *StopBits
   )
 {
-  return RETURN_UNSUPPORTED;
+  UINTN          UartBase;
+  UINT64         RequestedBaudRate;
+  UINT8          RequestedDataBits;
+  EFI_PARITY_TYPE    RequestedParity;
+  EFI_STOP_BITS_TYPE RequestedStopBits;
+  UINT64         Divisor;
+  RETURN_STATUS  Status;
+
+  if ((BaudRate == NULL) || (ReceiveFifoDepth == NULL) || (Timeout == NULL) ||
+      (Parity == NULL) || (DataBits == NULL) || (StopBits == NULL))
+  {
+    return RETURN_INVALID_PARAMETER;
+  }
+
+  RequestedBaudRate = (*BaudRate == 0) ? OMAP4_UART_BAUD_RATE : *BaudRate;
+  RequestedDataBits = (*DataBits == 0) ? OMAP4_UART_DATA_BITS : *DataBits;
+  RequestedParity   = (*Parity == DefaultParity) ? NoParity : *Parity;
+  RequestedStopBits = (*StopBits == DefaultStopBits) ? OneStopBit : *StopBits;
+
+  if (((*ReceiveFifoDepth != 0) && (*ReceiveFifoDepth != OMAP4_UART_FIFO_DEPTH)) ||
+      (*Timeout != 0))
+  {
+    return RETURN_UNSUPPORTED;
+  }
+
+  Status = SerialPortInitialize ();
+  if (RETURN_ERROR (Status)) {
+    return Status;
+  }
+
+  UartBase = (UINTN)PcdGet32 (PcdOmap4UartBase);
+  Status   = ConfigureUart (
+               UartBase,
+               RequestedBaudRate,
+               RequestedDataBits,
+               RequestedParity,
+               RequestedStopBits
+               );
+  if (RETURN_ERROR (Status)) {
+    return Status;
+  }
+
+  Divisor   = (OMAP4_UART3_CLOCK_HZ + (8 * RequestedBaudRate)) / (16 * RequestedBaudRate);
+  *BaudRate         = OMAP4_UART3_CLOCK_HZ / (16 * Divisor);
+  *ReceiveFifoDepth = OMAP4_UART_FIFO_DEPTH;
+  *Timeout          = 0;
+  *Parity           = RequestedParity;
+  *DataBits         = RequestedDataBits;
+  *StopBits         = RequestedStopBits;
+
+  return RETURN_SUCCESS;
 }
