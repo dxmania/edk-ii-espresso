@@ -1,24 +1,66 @@
-#include <Base.h>
+#include <PiPei.h>
 #include <Library/ArmPlatformLib.h>
-#include <Library/DebugLib.h>
-#include <Library/IoLib.h>
+#include <Library/ArmLib.h>
 
-VOID
-ArmPlatformInitialize (
-  IN UINTN                MpId
-)
-{
-  // todo core init
-}
+STATIC ARM_MEMORY_REGION_DESCRIPTOR  mVirtualMemoryMap[] = {
+  {
+    0x80000000,
+    0x80000000,
+    0x40000000,
+    ARM_MEMORY_REGION_ATTRIBUTE_WRITE_BACK
+  },
+  {
+    0x44000000,
+    0x44000000,
+    0x04000000,
+    ARM_MEMORY_REGION_ATTRIBUTE_DEVICE
+  },
+  {
+    0x48000000,
+    0x48000000,
+    0x08000000,
+    ARM_MEMORY_REGION_ATTRIBUTE_DEVICE
+  },
+  {
+    0x50000000,
+    0x50000000,
+    0x08000000,
+    ARM_MEMORY_REGION_ATTRIBUTE_DEVICE
+  },
+  { 0, 0, 0, 0 }
+};
 
 RETURN_STATUS
-EFIAPI
-ArmPlatformInitializeMemory (
-  OUT UINT64              *InstallMemoryBegin,
-  OUT UINTN               *InstallMemorySize
-)
+ArmPlatformInitialize (
+  IN UINTN  MpId
+  )
 {
-  *InstallMemoryBegin = 0x80000000; // 1GB RAM Base on Tab 2
-  *InstallMemorySize  = 0x40000000; // 1GB RAM Size
+  (VOID)MpId;
   return RETURN_SUCCESS;
+}
+
+EFI_BOOT_MODE
+ArmPlatformGetBootMode (
+  VOID
+  )
+{
+  return BOOT_WITH_FULL_CONFIGURATION;
+}
+
+VOID
+ArmPlatformGetVirtualMemoryMap (
+  OUT ARM_MEMORY_REGION_DESCRIPTOR  **VirtualMemoryMap
+  )
+{
+  *VirtualMemoryMap = mVirtualMemoryMap;
+}
+
+VOID
+ArmPlatformGetPlatformPpiList (
+  OUT UINTN                   *PpiListSize,
+  OUT EFI_PEI_PPI_DESCRIPTOR  **PpiList
+  )
+{
+  *PpiListSize = 0;
+  *PpiList     = NULL;
 }

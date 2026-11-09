@@ -9,6 +9,9 @@
 [Sources]
   EspressoBoardLib.c
 
+[Sources.ARM]
+  ArmPlatformHelper.S
+
 [Packages]
   MdePkg/MdePkg.dec
   ArmPkg/ArmPkg.dec

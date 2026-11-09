@@ -1,14 +1,19 @@
 [FD.Espresso_EFI]
-BaseAddress   = 0x80000000|gArmTokenSpaceGuid.PcdFdBaseAddress
+BaseAddress   = 0x80008000|gArmTokenSpaceGuid.PcdFdBaseAddress
 Size          = 0x00100000|gArmTokenSpaceGuid.PcdFdSize
 ErasePolarity = 1
-BlockSize     = 0x00001000
-NumBlocks     = 0x100
+BlockSize     = 0x1
+NumBlocks     = 0x100000
 
-0x00000000|0x00100000
+# reserve for rom config header
+0x00000000|0x00000208
+0x00000208|0x000FFDF8
+gArmTokenSpaceGuid.PcdFvBaseAddress|gArmTokenSpaceGuid.PcdFvSize
 FV = FVMAIN
 
 [FV.FVMAIN]
+BlockSize          = 0x1
+NumBlocks          = 0
 FvAlignment        = 8
 ERASE_POLARITY     = 1
 MEMORY_MAPPED      = TRUE
@@ -22,7 +27,23 @@ READ_ENABLED_CAP   = TRUE
 READ_STATUS        = FALSE
 WRITE_STATUS       = FALSE
 
+INF ArmPlatformPkg/Sec/Sec.inf
+INF MdeModulePkg/Core/Pei/PeiMain.inf
+INF ArmPlatformPkg/PlatformPei/PlatformPeim.inf
+INF ArmPlatformPkg/MemoryInitPei/MemoryInitPeim.inf
 INF ArmPkg/Drivers/CpuPei/CpuPei.inf
+
+[Rule.Common.SEC]
+  FILE SEC = $(NAMED_GUID) {
+    PE32 PE32 Align=Auto $(INF_OUTPUT)/$(MODULE_NAME).efi
+    UI   STRING="$(MODULE_NAME)" Optional
+  }
+
+[Rule.Common.PEI_CORE]
+  FILE PEI_CORE = $(NAMED_GUID) {
+    PE32 PE32 Align=Auto $(INF_OUTPUT)/$(MODULE_NAME).efi
+    UI   STRING="$(MODULE_NAME)" Optional
+  }
 
 [Rule.Common.PEIM]
   FILE PEIM = $(NAMED_GUID) {
