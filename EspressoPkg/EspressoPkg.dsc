@@ -64,7 +64,7 @@
   gArmPlatformTokenSpaceGuid.PcdCPUCorePrimaryStackSize|0x00020000
   gArmPlatformTokenSpaceGuid.PcdSystemMemoryUefiRegionSize|0x01000000
   gArmTokenSpaceGuid.PcdSystemMemoryBase|0x80000000
-  gArmTokenSpaceGuid.PcdSystemMemorySize|0x40000000
+  gArmTokenSpaceGuid.PcdSystemMemorySize|0x34400000
   gArmTokenSpaceGuid.PcdFdBaseAddress|0x80008000
   gArmTokenSpaceGuid.PcdFdSize|0x00100000
   gArmTokenSpaceGuid.PcdFvBaseAddress|0x80008208
@@ -72,7 +72,7 @@
   gOmap4PkgTokenSpaceGuid.PcdOmap4UartBase|0x48020000
   gOmap4PkgTokenSpaceGuid.PcdOmap4TimerBase|0x48036000
   gOmap4PkgTokenSpaceGuid.PcdOmap4TimerClockControl|0x4A009448
-  gOmap4PkgTokenSpaceGuid.PcdOmap4TimerFrequency|13000000
+  gOmap4PkgTokenSpaceGuid.PcdOmap4TimerFrequency|38400000
 
 [Components]
   ArmPlatformPkg/Sec/Sec.inf
