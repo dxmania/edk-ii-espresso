@@ -24,6 +24,7 @@
   PeimEntryPoint|MdePkg/Library/PeimEntryPoint/PeimEntryPoint.inf
   SerialPortLib|Omap4Pkg/Library/Omap4SerialPortLib/Omap4SerialPortLib.inf
   TimerLib|Omap4Pkg/Library/Omap4TimerLib/Omap4TimerLib.inf
+  ResetSystemLib|Omap4Pkg/Library/Omap4ResetSystemLib/Omap4ResetSystemLib.inf
   ArmPlatformLib|EspressoPkg/Library/EspressoBoardLib/EspressoBoardLib.inf
   ArmLib|ArmPkg/Library/ArmLib/ArmBaseLib.inf
   ArmMmuLib|UefiCpuPkg/Library/ArmMmuLib/ArmMmuBaseLib.inf
@@ -80,3 +81,4 @@
   ArmPlatformPkg/PlatformPei/PlatformPeim.inf
   ArmPlatformPkg/MemoryInitPei/MemoryInitPeim.inf
   ArmPkg/Drivers/CpuPei/CpuPei.inf
+  MdeModulePkg/Universal/ResetSystemPei/ResetSystemPei.inf

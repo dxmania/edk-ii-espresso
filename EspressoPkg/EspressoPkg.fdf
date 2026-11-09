@@ -32,6 +32,7 @@ INF MdeModulePkg/Core/Pei/PeiMain.inf
 INF ArmPlatformPkg/PlatformPei/PlatformPeim.inf
 INF ArmPlatformPkg/MemoryInitPei/MemoryInitPeim.inf
 INF ArmPkg/Drivers/CpuPei/CpuPei.inf
+INF MdeModulePkg/Universal/ResetSystemPei/ResetSystemPei.inf
 
 [Rule.Common.SEC]
   FILE SEC = $(NAMED_GUID) {
