@@ -1,0 +1,26 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = Omap4TimerLib
+  FILE_GUID                      = 6f3e69b9-675e-4fc3-86bb-68d625f49b41
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = TimerLib
+  CONSTRUCTOR                    = Omap4TimerLibConstructor
+
+[Sources]
+  Omap4TimerLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  Omap4Pkg/Omap4Pkg.dec
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
+  IoLib
+  PcdLib
+
+[FixedPcd]
+  gOmap4PkgTokenSpaceGuid.PcdOmap4TimerBase
+  gOmap4PkgTokenSpaceGuid.PcdOmap4TimerClockControl
+  gOmap4PkgTokenSpaceGuid.PcdOmap4TimerFrequency

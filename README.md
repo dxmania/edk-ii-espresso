@@ -11,7 +11,7 @@ This project attempts to port EDK-II as a module chainloadable by SBoot for the 
 
 - 10.1: 5100 (Baseband support will NOT be added), 5110, 5113
 
-In the event you have a less common device configuration that is not listed here, leave an issue on this repo, and I will consider whether it is worth the effort to make  such a port to your device.
+In the event you have a less common device configuration that is not listed here, leave an issue on this repo, and I will consider whether it is worth the effort to make such a port to your device.
 
 It should be noted that this port may eventually extend to support other OMAP 4 4430/4460 devices, but the 4470 will remain unsupported at all times.
 

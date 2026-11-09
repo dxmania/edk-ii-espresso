@@ -12,3 +12,6 @@
 
 [PcdsFixedAtBuild]
   gOmap4PkgTokenSpaceGuid.PcdOmap4UartBase|0x48020000|UINT32|0x00000001
+  gOmap4PkgTokenSpaceGuid.PcdOmap4TimerBase|0x48036000|UINT32|0x00000002
+  gOmap4PkgTokenSpaceGuid.PcdOmap4TimerClockControl|0x4A009448|UINT32|0x00000003
+  gOmap4PkgTokenSpaceGuid.PcdOmap4TimerFrequency|13000000|UINT32|0x00000004

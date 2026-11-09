@@ -23,6 +23,7 @@
   HobLib|MdePkg/Library/PeiHobLib/PeiHobLib.inf
   PeimEntryPoint|MdePkg/Library/PeimEntryPoint/PeimEntryPoint.inf
   SerialPortLib|Omap4Pkg/Library/Omap4SerialPortLib/Omap4SerialPortLib.inf
+  TimerLib|Omap4Pkg/Library/Omap4TimerLib/Omap4TimerLib.inf
   ArmPlatformLib|EspressoPkg/Library/EspressoBoardLib/EspressoBoardLib.inf
   ArmLib|ArmPkg/Library/ArmLib/ArmBaseLib.inf
   ArmMmuLib|UefiCpuPkg/Library/ArmMmuLib/ArmMmuBaseLib.inf
@@ -49,7 +50,6 @@
   PeCoffLib|MdePkg/Library/BasePeCoffLib/BasePeCoffLib.inf
   ReportStatusCodeLib|MdeModulePkg/Library/PeiReportStatusCodeLib/PeiReportStatusCodeLib.inf
   SafeIntLib|MdePkg/Library/BaseSafeIntLib/BaseSafeIntLib.inf
-  TimerLib|MdePkg/Library/BaseTimerLibNullTemplate/BaseTimerLibNullTemplate.inf
 
 [LibraryClasses.common.PEIM]
   MemoryAllocationLib|MdePkg/Library/PeiMemoryAllocationLib/PeiMemoryAllocationLib.inf
@@ -70,6 +70,9 @@
   gArmTokenSpaceGuid.PcdFvBaseAddress|0x80008208
   gArmTokenSpaceGuid.PcdFvSize|0x000FFDF8
   gOmap4PkgTokenSpaceGuid.PcdOmap4UartBase|0x48020000
+  gOmap4PkgTokenSpaceGuid.PcdOmap4TimerBase|0x48036000
+  gOmap4PkgTokenSpaceGuid.PcdOmap4TimerClockControl|0x4A009448
+  gOmap4PkgTokenSpaceGuid.PcdOmap4TimerFrequency|13000000
 
 [Components]
   ArmPlatformPkg/Sec/Sec.inf
